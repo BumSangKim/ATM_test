@@ -1,9 +1,10 @@
 #include <iostream>
-#include <ATM.h>
+#include "ATM.h"
 
 using namespace std;
 
 #define INT0_vect // interrupt service routine for card insert check
+
 ATM g_atm;
 
 void ISR(INT0_vect) {
@@ -37,7 +38,11 @@ void ISR(INT0_vect) {
             break;
             
         case WITHDRAW:
-            g_atm.withdraw();
+            bool withdrawStatus;
+            g_atm.withdraw(withdrawStatus);
+            if (withdrawStatus == 0) {
+                cout << "The deposit is less than the withdrawal you wish to make." << endl;
+            }
             break;
             
         case EXIT:
@@ -50,7 +55,9 @@ void ISR(INT0_vect) {
 int main() {
     cout << "start ATM." << endl;
     while(true){
-        
+#if defined(TEST)
+        ISR();
+#endif
     }
     cout << "end ATM." << endl;
     return 0;
