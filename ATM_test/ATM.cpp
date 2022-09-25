@@ -1,9 +1,10 @@
-#include <ATM.h>
+#include "ATM.h"
+#include "ATMcontrol.h"
 
 using namespace std;
 
 ATM::ATM()
-:currentCardID("")
+:curCardID("")
 {
     curCardInfo = CardInfo();
     curAccount = Account();
@@ -29,7 +30,7 @@ int ATM::getMoneyCount(int& money) {
     return SUCCESS;
 }
 
-// int requestServer(string Command, void* param, void* retParam = NULL);
+// int requestServer(string command, void* param, void* retParam = NULL);
 int ATM::isValidCardID() {
     if(requestServer("IsValidCardID", &currentCardID) != SUCCESS) {
         return FAIL;
@@ -45,7 +46,7 @@ int ATM::getCardInfo() {
         return FAIL;
     }
     
-    GetCardInfoKey getCardInfoKey(currentCardID, PIN);
+    GetCardInfoKey getCardInfoKey(curCardID, PIN);
     if(requestServer("GetCardInfo", &getCardInfoKey, &curCardInfo) != SUCCESS) {
         return FAIL;
     }
@@ -101,7 +102,7 @@ int selectNext(int& nextToDo) {
 }
 
 int ATM::getBalance(int& balance) {
-    GetBalanceKey getBalanceKey(cardInfo, account);
+    GetBalanceKey getBalanceKey(curCardInfo, curAccount);
     if(requestServer("GetBalance", &getBalanceKey, &balance) != SUCCESS) {
         return FAIL;
     }
@@ -115,7 +116,7 @@ int ATM::deposit() {
         return FAIL;
     }
     
-    DepositKey depositKey(cardInfo, account, curMoneyCount);
+    TransactionKey depositKey(curCardInfo, curAccount, curMoneyCount);
     if(requestServer("Deposit", &depositKey) != SUCCESS) {
         return FAIL;
     }
@@ -123,8 +124,14 @@ int ATM::deposit() {
     return SUCCESS;
 }
 
-int ATM::withdraw(int money, bool withdrawStatus/* 0: lack of money, 1: success*/) {
-    WithdrawKey withdrawKey(cardInfo, account, money);
+// int selectWithdrawMoney(int& money);
+int ATM::withdraw(bool withdrawStatus/* 0: lack of money, 1: success*/) {
+    int curSelectMoney = -1;
+    if (selectWithdrawMoney(curSelectMoney) != SUCCESS) {
+        return FAIL;
+    }
+    
+    TransactionKey withdrawKey(curCardInfo, curAccount, curSelectMoney);
     if(requestServer("Withdraw", &withdrawKey, &withdrawStatus) != SUCCESS) {
         return FAIL;
     }
@@ -133,7 +140,7 @@ int ATM::withdraw(int money, bool withdrawStatus/* 0: lack of money, 1: success*
 }
 
 int ATM::resetData() {
-    currentCardID = "";
+    curCardID = "";
     curCardInfo = CardInfo();
     curAccount = Account();
 }

@@ -27,7 +27,7 @@ public:
         accountNumber = "";
     }
     string getAccountNumber(){return accountNumber;}
-    string setAccountNumber(string& accountNumber){this->accountNumber = accountNumber;}
+    void setAccountNumber(string& accountNumber){this->accountNumber = accountNumber;}
 };
 
 class CardInfo {
@@ -40,47 +40,46 @@ public:
         accounts = vector<Account>();
     }
     vector<Account> getAccount(){return accounts;}
-    vector<Account> setAccount(vector<Account>& accounts){this->accounts = accounts;}
+    void setAccount(vector<Account>& accounts){this->accounts = accounts;}
 };
 
 typedef struct GetCardInfoKey {
     string cardID;
     int PIN;
-    GetCardInfoKey(stirng& cardID, int PIN) {
+    GetCardInfoKey(string& cardID, int PIN) {
         this->cardID = cardID;
         this->PIN = PIN;
     }
 } GetCardInfoKey;
 
-typedef struct DepositKey {
+typedef struct GetBalanceKey {
     CardInfo cardInfo;
     Account account;
-    int money;
-    GetBalanceKey(CardInfo& cardInfo, Account& account, int money) {
+    GetBalanceKey(CardInfo& cardInfo, Account& account) {
         this->cardInfo = cardInfo;
         this->account = account;
-        this->money = money;
     }
-} DepositKey;
+} GetBalanceKey;
 
-typedef struct WithdrawKey {
+typedef struct TransactionKey {
     CardInfo cardInfo;
     Account account;
     int money;
-    GetBalanceKey(CardInfo& cardInfo, Account& account, int money) {
+    TransactionKey(CardInfo& cardInfo, Account& account, int money) {
         this->cardInfo = cardInfo;
         this->account = account;
         this->money = money;
     }
-} WithdrawKey;
+} TransactionKey;
 
 class ATM {
     ATM();
     ~ATM();
 private:
-    string currentCardID;
+    string curCardID;
     CardInfo curCardInfo;
     Account curAccount;
+    int curMoneyCount;
 
     int getCardID();
     int isValidCardID(); // Request to server if currentCardID is a valid card
@@ -104,10 +103,10 @@ public:
     int getBalance(int& balance);
 
     // Deposit
-    int deposit(int money);
+    int deposit();
 
     // Withdraw
-    int withDraw(int money);
+    int withdraw(bool withdrawStatus);
     
     // resetData
     int resetData();
