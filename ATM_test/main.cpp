@@ -10,18 +10,22 @@ using namespace std;
 ATM g_atm;
 
 void interruptServiceRoutine(INT0_vect) {
+    cout << "cardCheck" << endl;
     if (g_atm.cardCheck() != SUCCESS) {
         return;
     }
     
+    cout << "showAccount" << endl;
     if (g_atm.showAccount() != SUCCESS) {
         return;
     }
     
+    cout << "selectAccount" << endl;
     if (g_atm.selectAccount() != SUCCESS) {
         return;
     }
     
+    cout << "selectNext" << endl;
     int index = -1;
     if (g_atm.selectNext(index) != SUCCESS) {
         return;

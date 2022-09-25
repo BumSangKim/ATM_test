@@ -28,7 +28,7 @@ class Account;
 
 int loadServerData();
 
-bool isInit = false;
+static bool isInit = false;
 static unordered_map<string, int> commandMap;
 enum SERVER_COMMAND {
     IS_VALID_CARD_ID_COMMAND = 0,

@@ -87,6 +87,7 @@ int showAccountToScreen(string& cardID) {
 
 int getIndexFromUser(int& index) {
     
+    cin >> index;
     return SUCCESS;
 }
 

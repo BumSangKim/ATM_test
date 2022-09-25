@@ -10,6 +10,11 @@ ATM::ATM()
     curAccount = Account();
 }
 
+ATM::~ATM()
+{
+}
+
+
 // int getCardIdFromCardReader(string& cardID);
 int ATM::getCardID() {
     // get card ID form card reader
@@ -98,7 +103,7 @@ int ATM::selectAccount() {
 }
 
 // int getIndexFromUser(int& index);
-int selectNext(int& nextToDo) {
+int ATM::selectNext(int& nextToDo) {
     if(getIndexFromUser(nextToDo) != SUCCESS) {
         return FAIL;
     }
