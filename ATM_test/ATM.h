@@ -1,6 +1,7 @@
 #ifndef ATM_h
 #define ATM_h
 
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -9,7 +10,14 @@ using namespace std;
 enum ERROR {
     SUCCESS = 0,
     FAIL
-}
+};
+
+enum SELECTED_NEXT_EXECUTE {
+    GET_BALANCE = 0,
+    DEPOSIT,
+    WITHDRAW,
+    EXIT,
+};
 
 class Account {
 private:
@@ -76,14 +84,21 @@ private:
 
     int getCardID();
     int isValidCardID(); // Request to server if currentCardID is a valid card
-    int getCardInfo(stirng cardID, int PIN); // Request to server to get card information
+    int getCardInfo(); // Request to server to get card information
     int getMoneyCount(int& money);
-    
 
 public:
-    // selectAccount
+    // Check card is valid
+    int cardCheck();
+    
+    // Show Account
     int showAccount();
+
+    // Select Account
     int selectAccount();
+    
+    // Select what to do next
+    int selectNext(int& nextToDo);
 
     // See Balance
     int getBalance(int& balance);
@@ -93,7 +108,7 @@ public:
 
     // Withdraw
     int withDraw(int money);
-
+    
     // resetData
     int resetData();
 };
