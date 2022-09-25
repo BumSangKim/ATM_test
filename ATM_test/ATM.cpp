@@ -13,7 +13,7 @@ ATM::ATM()
 // int getCardIdFromCardReader(string& cardID);
 int ATM::getCardID() {
     // get card ID form card reader
-    if(getCardIdFromCardReader(currentCardID) != SUCCESS) {
+    if(getCardIdFromCardReader(curCardID) != SUCCESS) {
         return FAIL;
     }
     
@@ -32,7 +32,7 @@ int ATM::getMoneyCount(int& money) {
 
 // int requestServer(string command, void* param, void* retParam = NULL);
 int ATM::isValidCardID() {
-    if(requestServer("IsValidCardID", &currentCardID) != SUCCESS) {
+    if(requestServer("IsValidCardID", &curCardID) != SUCCESS) {
         return FAIL;
     }
     
@@ -58,22 +58,27 @@ int ATM::cardCheck() {
     if (getCardID() != SUCCESS) {
         resetData();
         cout << "fail read card id from your card." << endl;
+        return FAIL;
     }
     
     if (isValidCardID() != SUCCESS) {
         resetData();
         cout << "it is not valid card id." << endl;
+        return FAIL;
     }
     
     if (getCardInfo() != SUCCESS) {
         resetData();
         cout << "it is not valid PIN." << endl;
+        return FAIL;
     }
+    
+    return SUCCESS;
 }
 
-// int showAccountToScreen(vector<Account>& accounts);
+// int showAccountToScreen(string& cardID);
 int ATM::showAccount() {
-    if(showAccountToScreen(curCardInfo.getAccount()) != SUCCESS) {
+    if(showAccountToScreen(curCardID) != SUCCESS) {
         return FAIL;
     }
     
@@ -83,11 +88,11 @@ int ATM::showAccount() {
 // int getIndexFromUser(int& index);
 int ATM::selectAccount() {
     int currentIndex = -1;
-    if (getIndexFromUser(&currentIndex) != SUCCESS) {
+    if (getIndexFromUser(currentIndex) != SUCCESS) {
         return FAIL;
     }
     
-    curAccount = curCardInfo.getAccount()[currentIndex];
+    curAccount = curCardInfo.getAccounts()[currentIndex];
         
     return SUCCESS;
 }
@@ -143,5 +148,7 @@ int ATM::resetData() {
     curCardID = "";
     curCardInfo = CardInfo();
     curAccount = Account();
+    
+    return SUCCESS;
 }
 

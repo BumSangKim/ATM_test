@@ -12,12 +12,12 @@ enum ERROR {
     FAIL
 };
 
-enum SELECTED_NEXT_EXECUTE {
+typedef enum SELECTED_NEXT_EXECUTE {
     GET_BALANCE = 0,
     DEPOSIT,
     WITHDRAW,
-    EXIT,
-};
+    EXIT
+} SELECTED_NEXT_EXECUTE;
 
 class Account {
 private:
@@ -25,7 +25,7 @@ private:
 public:
     Account() {
         accountNumber = "";
-    }
+        }
     string getAccountNumber(){return accountNumber;}
     void setAccountNumber(string& accountNumber){this->accountNumber = accountNumber;}
 };
@@ -39,7 +39,7 @@ public:
         cardID = "";
         accounts = vector<Account>();
     }
-    vector<Account> getAccount(){return accounts;}
+    vector<Account> getAccounts(){return accounts;}
     void setAccount(vector<Account>& accounts){this->accounts = accounts;}
 };
 
@@ -73,6 +73,7 @@ typedef struct TransactionKey {
 } TransactionKey;
 
 class ATM {
+public:
     ATM();
     ~ATM();
 private:

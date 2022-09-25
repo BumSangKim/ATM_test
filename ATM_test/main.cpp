@@ -1,13 +1,15 @@
 #include <iostream>
 #include "ATM.h"
+#include "ATMcontrol.h"
 
 using namespace std;
 
 #define INT0_vect // interrupt service routine for card insert check
+#define TEST
 
 ATM g_atm;
 
-void ISR(INT0_vect) {
+void interruptServiceRoutine(INT0_vect) {
     if (g_atm.cardCheck() != SUCCESS) {
         return;
     }
@@ -27,11 +29,12 @@ void ISR(INT0_vect) {
     SELECTED_NEXT_EXECUTE nextToDo = static_cast<SELECTED_NEXT_EXECUTE>(index);
     
     switch (nextToDo) {
-        case GET_BALANCE:
+        case GET_BALANCE: {
             int balace = -1;
             g_atm.getBalance(balace);
             cout << "cur balance is $" << balace << endl;
             break;
+        }
             
         case DEPOSIT:
             g_atm.deposit();
@@ -46,6 +49,9 @@ void ISR(INT0_vect) {
             break;
             
         case EXIT:
+            cout << "exit" << endl;
+            break;
+        default:
             break;
     }
     
@@ -54,9 +60,13 @@ void ISR(INT0_vect) {
 
 int main() {
     cout << "start ATM." << endl;
+#if defined(TEST)
+    loadServerData();
+#endif
+    
     while(true){
 #if defined(TEST)
-        ISR();
+        interruptServiceRoutine();
 #endif
     }
     cout << "end ATM." << endl;
