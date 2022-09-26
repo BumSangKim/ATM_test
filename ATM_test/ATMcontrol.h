@@ -28,7 +28,6 @@ class Account;
 
 int loadServerData();
 
-static bool isInit = false;
 static unordered_map<string, int> commandMap;
 enum SERVER_COMMAND {
     IS_VALID_CARD_ID_COMMAND = 0,
@@ -44,7 +43,8 @@ int getCardIdFromCardReader(string& cardID);
 int countMoneyFromDepositMachine(int& money);
 int getPINFromUser(int& PIN);
 int showAccountToScreen(string& cardID);
-int getIndexFromUser(int& index);
+int getAccountIndexFromUser(int& index);
+int getNextToDoIndexFromUser(int& index);
 int selectWithdrawMoney(int& money);
 
 #endif
