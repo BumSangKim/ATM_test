@@ -3,11 +3,14 @@
 
 using namespace std;
 
+int storedMoneyInATM = 1500;
+
+// test server data
 unordered_map<string, ServerData> g_serverData;
 int loadServerData() {
     string cardID0 = "1234123412341234";
     AccountInfo account00("10", 100);
-    AccountInfo account01("11", 200);
+    AccountInfo account01("11", 2000);
     vector<AccountInfo> accountInfo0;
     accountInfo0.push_back(account00);
     accountInfo0.push_back(account01);
@@ -40,6 +43,7 @@ void initCommand() {
     commandMap["Withdraw"] = WITHDRAW_COMMAND;
 }
 
+// Although data is exchanged here, it is actually an API that requests the server.
 int requestServer(string command, void* param, void* retParam) {
     switch (commandMap[command]) {
         case IS_VALID_CARD_ID_COMMAND: {
@@ -90,6 +94,7 @@ int requestServer(string command, void* param, void* retParam) {
             for (int i = 0; i < n; i++) {
                 if (g_serverData[curTransactionKey.cardInfo.getCardID()].accountInfo[i].accountID == curTransactionKey.account.getAccountNumber()) {
                     g_serverData[curTransactionKey.cardInfo.getCardID()].accountInfo[i].balance += curTransactionKey.money;
+                    storedMoneyInATM += curTransactionKey.money;
                     break;
                 }
             }
@@ -102,11 +107,16 @@ int requestServer(string command, void* param, void* retParam) {
             for (int i = 0; i < n; i++) {
                 if (g_serverData[curTransactionKey.cardInfo.getCardID()].accountInfo[i].accountID == curTransactionKey.account.getAccountNumber()) {
                     if (g_serverData[curTransactionKey.cardInfo.getCardID()].accountInfo[i].balance < curTransactionKey.money) {
-                        *(bool*)retParam = 0;
+                        *(int*)retParam = 0;
+                        break;
+                    }
+                    if (storedMoneyInATM < curTransactionKey.money) {
+                        *(int*)retParam = 1;
                         break;
                     }
                     g_serverData[curTransactionKey.cardInfo.getCardID()].accountInfo[i].balance -= curTransactionKey.money;
-                    *(bool*)retParam = 1;
+                    storedMoneyInATM -= curTransactionKey.money;
+                    *(int*)retParam = 2;
                     break;
                 }
             }

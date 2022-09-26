@@ -101,7 +101,10 @@ int ATM::selectAccount() {
     if (getAccountIndexFromUser(currentIndex) != SUCCESS) {
         return FAIL;
     }
-    
+    if (currentIndex >= curCardInfo->getAccounts().size()) {
+        cout << "Out of Index." << endl;
+        return FAIL;
+    }
     curAccount = curCardInfo->getAccounts()[currentIndex];
     return SUCCESS;
 }
@@ -139,7 +142,7 @@ int ATM::deposit() {
 }
 
 // int selectWithdrawMoney(int& money);
-int ATM::withdraw(bool& withdrawStatus/* 0: lack of money, 1: success*/) {
+int ATM::withdraw(int& withdrawStatus/* 0: lack of money in account, 1: lack of money in ATM 2: success*/) {
     int curSelectMoney = -1;
     if (selectWithdrawMoney(curSelectMoney) != SUCCESS) {
         return FAIL;

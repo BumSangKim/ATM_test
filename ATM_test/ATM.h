@@ -85,7 +85,6 @@ private:
     string curCardID;
     CardInfo* curCardInfo;
     Account curAccount;
-    int curMoneyCount;
 
     int getCardID();
     int isValidCardID(); // Request to server if currentCardID is a valid card
@@ -112,7 +111,7 @@ public:
     int deposit();
 
     // Withdraw
-    int withdraw(bool& withdrawStatus);
+    int withdraw(int& withdrawStatus);
     
     // resetData
     int resetData();

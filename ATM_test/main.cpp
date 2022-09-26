@@ -40,10 +40,13 @@ void interruptServiceRoutine(INT0_vect) {
             break;
             
         case WITHDRAW:
-            bool withdrawStatus;
+            int withdrawStatus;
             g_atm.withdraw(withdrawStatus);
             if (withdrawStatus == 0) {
                 cout << "The deposit is less than the withdrawal you wish to make." << endl;
+            }
+            else if (withdrawStatus == 1) {
+                cout << "Stored Money in ATM is less than the withdrawal you wish to make." << endl;
             }
             break;
             
