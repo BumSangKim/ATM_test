@@ -15,11 +15,6 @@ void interruptServiceRoutine(INT0_vect) {
         return;
     }
     
-    cout << "showAccount" << endl;
-    if (g_atm.showAccount() != SUCCESS) {
-        return;
-    }
-    
     cout << "selectAccount" << endl;
     if (g_atm.selectAccount() != SUCCESS) {
         return;
@@ -64,6 +59,7 @@ void interruptServiceRoutine(INT0_vect) {
 
 int main() {
     cout << "start ATM." << endl;
+    initCommand();
 #if defined(TEST)
     loadServerData();
 #endif

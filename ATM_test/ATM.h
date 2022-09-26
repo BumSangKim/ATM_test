@@ -25,7 +25,10 @@ private:
 public:
     Account() {
         accountNumber = "";
-        }
+    }
+    Account(string accountNumber) {
+        this->accountNumber = accountNumber;
+    }
     string getAccountNumber(){return accountNumber;}
     void setAccountNumber(string& accountNumber){this->accountNumber = accountNumber;}
 };
@@ -39,6 +42,8 @@ public:
         cardID = "";
         accounts = vector<Account>();
     }
+    string getCardID() {return cardID;}
+    void setCardID(string cardID) {this->cardID = cardID;}
     vector<Account> getAccounts(){return accounts;}
     void setAccount(vector<Account>& accounts){this->accounts = accounts;}
 };
@@ -78,7 +83,7 @@ public:
     ~ATM();
 private:
     string curCardID;
-    CardInfo curCardInfo;
+    CardInfo* curCardInfo;
     Account curAccount;
     int curMoneyCount;
 
@@ -107,7 +112,7 @@ public:
     int deposit();
 
     // Withdraw
-    int withdraw(bool withdrawStatus);
+    int withdraw(bool& withdrawStatus);
     
     // resetData
     int resetData();

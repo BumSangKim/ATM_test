@@ -6,7 +6,7 @@ using namespace std;
 ATM::ATM()
 :curCardID("")
 {
-    curCardInfo = CardInfo();
+    curCardInfo = nullptr;
     curAccount = Account();
 }
 
@@ -52,7 +52,8 @@ int ATM::getCardInfo() {
     }
     
     GetCardInfoKey getCardInfoKey(curCardID, PIN);
-    if(requestServer("GetCardInfo", &getCardInfoKey, &curCardInfo) != SUCCESS) {
+    curCardInfo = new CardInfo();
+    if(requestServer("GetCardInfo", &getCardInfoKey, curCardInfo) != SUCCESS) {
         return FAIL;
     }
     
@@ -90,21 +91,24 @@ int ATM::showAccount() {
     return SUCCESS;
 }
 
-// int getIndexFromUser(int& index);
+// int getAccountIndexFromUser(int& index);
 int ATM::selectAccount() {
-    int currentIndex = -1;
-    if (getIndexFromUser(currentIndex) != SUCCESS) {
+    if (showAccount() != SUCCESS) {
         return FAIL;
     }
     
-    curAccount = curCardInfo.getAccounts()[currentIndex];
-        
+    int currentIndex = -1;
+    if (getAccountIndexFromUser(currentIndex) != SUCCESS) {
+        return FAIL;
+    }
+    
+    curAccount = curCardInfo->getAccounts()[currentIndex];
     return SUCCESS;
 }
 
-// int getIndexFromUser(int& index);
+// int getNextToDoIndexFromUser(int& index);
 int ATM::selectNext(int& nextToDo) {
-    if(getIndexFromUser(nextToDo) != SUCCESS) {
+    if(getNextToDoIndexFromUser(nextToDo) != SUCCESS) {
         return FAIL;
     }
     
@@ -112,7 +116,7 @@ int ATM::selectNext(int& nextToDo) {
 }
 
 int ATM::getBalance(int& balance) {
-    GetBalanceKey getBalanceKey(curCardInfo, curAccount);
+    GetBalanceKey getBalanceKey(*curCardInfo, curAccount);
     if(requestServer("GetBalance", &getBalanceKey, &balance) != SUCCESS) {
         return FAIL;
     }
@@ -126,7 +130,7 @@ int ATM::deposit() {
         return FAIL;
     }
     
-    TransactionKey depositKey(curCardInfo, curAccount, curMoneyCount);
+    TransactionKey depositKey(*curCardInfo, curAccount, curMoneyCount);
     if(requestServer("Deposit", &depositKey) != SUCCESS) {
         return FAIL;
     }
@@ -135,23 +139,23 @@ int ATM::deposit() {
 }
 
 // int selectWithdrawMoney(int& money);
-int ATM::withdraw(bool withdrawStatus/* 0: lack of money, 1: success*/) {
+int ATM::withdraw(bool& withdrawStatus/* 0: lack of money, 1: success*/) {
     int curSelectMoney = -1;
     if (selectWithdrawMoney(curSelectMoney) != SUCCESS) {
         return FAIL;
     }
     
-    TransactionKey withdrawKey(curCardInfo, curAccount, curSelectMoney);
+    TransactionKey withdrawKey(*curCardInfo, curAccount, curSelectMoney);
     if(requestServer("Withdraw", &withdrawKey, &withdrawStatus) != SUCCESS) {
         return FAIL;
     }
-    
     return SUCCESS;
 }
 
 int ATM::resetData() {
     curCardID = "";
-    curCardInfo = CardInfo();
+    delete curCardInfo;
+    curCardInfo = nullptr;
     curAccount = Account();
     
     return SUCCESS;
